@@ -19,7 +19,11 @@ public interface BookingRepository extends BaseRepository<Booking, Long> {
 
     List<Booking> findByBookingDate(Date bookingDate);
 
+    List<Booking> findByBookingDateAndVenueId(Date bookingDate, Integer venue);
+
     List<Booking> findByBookingDateAndBookingTime(Date bookingDate, String bookingTime);
 
     Integer countByUserIdAndBookingDate(Long userId, Date bookingDate);
+
+    Integer countByUserIdAndBookingDateAndBookingTime(Long userId, Date bookingDate, String bookingTime);
 }

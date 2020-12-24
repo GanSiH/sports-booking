@@ -3,9 +3,7 @@ package com.linln.admin.system.validator;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -22,6 +20,7 @@ public class BookingValid implements Serializable {
     private String nickname;
 
     @NotNull(message = "人数不能为空")
+    @Min(1)
     private Integer number;
 
     @NotNull(message = "预约日期不能为空")

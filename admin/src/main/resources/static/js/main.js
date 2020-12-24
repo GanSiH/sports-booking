@@ -377,11 +377,21 @@ layui.use(['element', 'form', 'layer', 'upload', 'laydate'], function () {
     });
 
     form.on('select(bookingDate)', function (data) {
+        var venue = $("select[name='venue'] option:selected").val();
+        if (venue == '') {
+            layer.msg("请先选择场馆", {offset: '15px', time: 3000, icon: 2});
+            $("select[name='bookingDate']").val('');
+            form.render();
+            return;
+        }
         var value = data.value;
         $.ajax({
             type: 'post',
-            url: '/booking/findBookingTimeByBookingDate',
-            data: {bookingDate: value},
+            url: '/booking/findByBookingDateAndVenueId',
+            data: {
+                bookingDate: value,
+                venue: venue
+            },
             success: function (result) {
                 // for (var i = 0; i < result.length; i++) {
                 //     var text = result[i].bookingTime;
@@ -391,38 +401,46 @@ layui.use(['element', 'form', 'layer', 'upload', 'laydate'], function () {
                 // }
                 var selectOption = "";
                 var enabled = "";
+                selectOption += "<option value=''>请选择</option>";
                 for(var i = 0; i < result.length; i++){
                     enabled = (result[i].enabled == 0) ? " disabled" : "";
-                    selectOption += "<option value="+result[i].bookingTimeId+enabled+">"+result[i].bookingTime+"";
+                    selectOption += "<option value="+result[i].bookingTimeId+enabled+">"+result[i].bookingTime+"</option>";
                 }
-                $("select[name='bookingTimeSelect']").html(selectOption);
+                $("select[name='bookingTime']").html(selectOption);
                 form.render();
             }
         });
     });
 
     form.on('select(bookingTime)', function (data) {
-        var value = data.value;
-        $.ajax({
-            type: 'post',
-            url: '/booking/findVenueByBookingTime',
-            data: {
-                bookingDate: $('#bookingDate option:selected').val(),
-                bookingTime: value
-            },
-            success: function (result) {
-                var selectOption = "";
-                var enabled = "";
-                selectOption += "<option value=''>"+"=======请选择========"+"</option>";
-                for(var i = 0; i < result.length; i++){
-                    var enabled = result[i].enabled == 1 ? "" : "disabled";
-                    selectOption += "<option value="+result[i].venueId+" "+enabled+">"+result[i].venue+"</option>";
-                    console.log(selectOption)
-                }
-                $("#venue").html(selectOption);
-                form.render();
-            }
-        });
+        var venue = $("select[name='venue'] option:selected").val();
+        var bookingDate = $("select[name='bookingDate'] option:selected").val();
+        if (venue == '' || bookingDate == '') {
+            layer.msg("请先选择场馆和预约时间", {offset: '15px', time: 3000, icon: 2});
+        }
+    //     var value = data.value;
+    //     console.log($('select[name="bookingDate"] option:selected').val())
+    //     $.ajax({
+    //         type: 'post',
+    //         url: '/booking/findVenueByBookingTime',
+    //         data: {
+    //             bookingDate: $('select[name="bookingDate"] option:selected').val(),
+    //             bookingTime: value
+    //         },
+    //         success: function (result) {
+    //             var selectOption = "";
+    //             var enabled = "";
+    //             selectOption += "<option value=''>请选择</option>";
+    //             for(var i = 0; i < result.length; i++){
+    //                 enabled = (result[i].enabled == 0) ? " disabled" : "";
+    //                 selectOption += "<option value="+result[i].venueId+enabled+">"+result[i].venue+"</option>";
+    //                 console.log('result[i].enabled='+result[i].enabled)
+    //                 console.log(selectOption)
+    //             }
+    //             $("select[name='venue']").html(selectOption);
+    //             form.render();
+    //         }
+    //     });
     });
 
 });

@@ -33,6 +33,10 @@ public interface BookingService {
     //同一手机号，在同一天内预约数量
     Integer countByUserIdAndBookingDate(Booking booking);
 
+    Integer countByUserIdAndBookingDateAndBookingTime(Booking booking);
+
+    Map<String, Integer> findByBookingDateAndVenueId(String bookingDate, Integer venue) throws ParseException;
+
     Map<String, Integer> findByBookingDate(String bookingDate) throws ParseException;
 
     Map<Integer, Integer> findByBookingDateAndBookingTime(String bookingDate, String bookingTime) throws ParseException;

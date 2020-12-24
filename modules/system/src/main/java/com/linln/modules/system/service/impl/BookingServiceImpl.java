@@ -86,6 +86,22 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    public Integer countByUserIdAndBookingDateAndBookingTime(Booking booking) {
+        Integer bookinglist = bookingRepository.countByUserIdAndBookingDateAndBookingTime(booking.getUserId(), booking.getBookingDate(), booking.getBookingTime());
+        return bookinglist;
+    }
+
+    @Override
+    public Map<String, Integer> findByBookingDateAndVenueId(String bookingDate, Integer venue) throws ParseException {
+        Map<String, Integer> map = new HashMap<>();
+        List<Booking> bookinglist = bookingRepository.findByBookingDateAndVenueId(sdf_1.parse(bookingDate), venue);
+        for (Booking booking : bookinglist) {
+            map.put(booking.getBookingTime(), 0);
+        }
+        return map;
+    }
+
+    @Override
     public Map<String, Integer> findByBookingDate(String bookingDate) throws ParseException {
         Map<String, Integer> map = new HashMap<>();
         List<Booking> bookinglist = bookingRepository.findByBookingDate(sdf_1.parse(bookingDate));
@@ -98,7 +114,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Map<Integer, Integer> findByBookingDateAndBookingTime(String bookingDate, String bookingTime) throws ParseException {
         Map<Integer, Integer> map = new HashMap<>();
-        List<Booking> bookinglist = bookingRepository.findByBookingDateAndBookingTime(sdf_1.parse(bookingTime), bookingTime);
+        List<Booking> bookinglist = bookingRepository.findByBookingDateAndBookingTime(sdf_1.parse(bookingDate), bookingTime);
         for (Booking booking : bookinglist) {
             map.put(booking.getVenueId(), 0);
         }

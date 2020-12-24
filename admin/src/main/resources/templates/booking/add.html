@@ -25,10 +25,20 @@
             </div>
         </div>
         <div class="layui-form-item">
+            <label class="layui-form-label required">场馆</label>
+            <div class="layui-input-inline">
+                <select name="venue" lay-filter="venue">
+                    <option value="">请选择</option>
+                    <option th:each="venue:${venueTypes}" th:value="${venue.key}" th:text="${venue.value}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
             <label class="layui-form-label required">预约日期</label>
             <div class="layui-input-inline">
 <!--                <input class="layui-input" type="text" id="laydate" name="bookingDate" placeholder="请选择预约日期" lay-key="1">-->
-                <select name="bookingDateSelect" lay-filter="bookingDate">
+                <select name="bookingDate" lay-filter="bookingDate">
+                    <option value="">请选择</option>
                     <option th:each="bookingDate:${bookingDates}" th:value="${bookingDate}" th:text="${bookingDate}"></option>
                 </select>
             </div>
@@ -36,20 +46,12 @@
         <div class="layui-form-item">
             <label class="layui-form-label required">预约时间</label>
             <div class="layui-input-inline">
-                <select name="bookingTimeSelect" lay-filter="bookingTime">
+                <select name="bookingTime" lay-filter="bookingTime">
 <!--                    <option th:each="bookingTime:${bookingTimes}" th:value="${bookingTime.key}" th:text="${bookingTime.value}"></option>-->
                 </select>
             </div>
         </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label required">场馆</label>
-            <div class="layui-input-inline">
-                <select name="venueSelect" lay-filter="venue">
-<!--                    <option th:each="venue:${venueTypes}" th:value="${venue.key}" th:text="${venue.value}"></option>-->
-                </select>
-            </div>
-        </div>
-        <div class="layui-form-item timo-finally">
+        <div class="layui-form-item timo-finally" style="text-align: center">
             <button class="layui-btn ajax-submit"><i class="fa fa-check-circle"></i> 预约</button>
             <button class="layui-btn btn-secondary close-popup"><i class="fa fa-times-circle"></i> 关闭</button>
         </div>

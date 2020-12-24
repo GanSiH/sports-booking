@@ -62,7 +62,7 @@ public class BookingController {
         model.addAttribute("nickname", principal.getNickname());
         model.addAttribute("username", principal.getUsername());
         model.addAttribute("bookingDates", bookingDates);
-        model.addAttribute("bookingTimes", bookingTimes);
+//        model.addAttribute("bookingTimes", bookingTimes);
         model.addAttribute("venueTypes", venueTypes);
         return "/booking/add";
     }
@@ -98,34 +98,38 @@ public class BookingController {
     @PostMapping("/save")
 //    @RequiresPermissions({"booking:add", "booking:edit"})
     @ResponseBody
-    @ActionLog(key = RoleAction.ROLE_SAVE, action = RoleAction.class)
+//    @ActionLog(key = RoleAction.ROLE_SAVE, action = RoleAction.class)
     public ResultVo save(@Validated BookingValid valid, @EntityParam Booking booking){
-        if (bookingService.isBooked(booking)) {
-            return ResultVoUtil.error("已被预约，请重新操作");
-        }
-        if (bookingService.countByUserIdAndBookingDate(booking) >= 2) {
-            return ResultVoUtil.error("同一手机号，在同一天内不可预约三场以上");
-        }
         User principal = (User)SecurityUtils.getSubject().getPrincipal();
         Long userId = principal.getId();
         booking.setUserId(userId);
         booking.setVenueId(valid.getVenue());
+        if (bookingService.isBooked(booking)) {
+            return ResultVoUtil.error("已被预约，请重新操作");
+        }
+        if (bookingService.countByUserIdAndBookingDate(booking) >= 2) {
+            return ResultVoUtil.error("同一手机号，在同一天内不可预约三场以上(含)");
+        }
+        if (bookingService.countByUserIdAndBookingDate(booking) > 0) {
+            return ResultVoUtil.error("同一手机号在同一时间不可预约不同的项目");
+        }
         bookingService.save(booking);
-        return ResultVoUtil.SAVE_SUCCESS;
+        return ResultVoUtil.BOOKING_SUCCESS;
     }
 
     /**
      * 预约下拉框联动 查询预约时间
      * @param bookingDate
+     * @param venue
      * @return
      * @throws ParseException
      */
-    @PostMapping("/findBookingTimeByBookingDate")
+    @PostMapping("/findByBookingDateAndVenueId")
     @ResponseBody
-    public List<bookingDto> findBookingTimeByBookingDate(@RequestParam("bookingDate") String bookingDate) throws ParseException {
+    public List<bookingDto> findByBookingDateAndVenueId(@RequestParam("bookingDate") String bookingDate, @RequestParam("venue") Integer venue) throws ParseException {
         List<bookingDto> list = new ArrayList<>();
         Map<String, String> bookingTimes = DictUtil.value("BOOKING_TIME");
-        Map<String, Integer> bookingTimesEnable = bookingService.findByBookingDate(bookingDate);
+        Map<String, Integer> bookingTimesEnable = bookingService.findByBookingDateAndVenueId(bookingDate, venue);
         for (int i = 1; i <= bookingTimes.size(); i++) {
             bookingDto bookingDto = new bookingDto();
             bookingDto.setBookingTimeId(i);
@@ -137,25 +141,47 @@ public class BookingController {
     }
 
     /**
+     * 预约下拉框联动 查询预约时间
+     * @param bookingDate
+     * @return
+     * @throws ParseException
+     */
+//    @PostMapping("/findBookingTimeByBookingDate")
+//    @ResponseBody
+//    public List<bookingDto> findBookingTimeByBookingDate(@RequestParam("bookingDate") String bookingDate) throws ParseException {
+//        List<bookingDto> list = new ArrayList<>();
+//        Map<String, String> bookingTimes = DictUtil.value("BOOKING_TIME");
+//        Map<String, Integer> bookingTimesEnable = bookingService.findByBookingDate(bookingDate);
+//        for (int i = 1; i <= bookingTimes.size(); i++) {
+//            bookingDto bookingDto = new bookingDto();
+//            bookingDto.setBookingTimeId(i);
+//            bookingDto.setBookingTime(bookingTimes.get(String.valueOf(i)));
+//            bookingDto.setEnabled(bookingTimesEnable.get(String.valueOf(i))==null?1:bookingTimesEnable.get(String.valueOf(i)));
+//            list.add(bookingDto);
+//        }
+//        return list;
+//    }
+
+    /**
      * 预约下拉框联动 查询场馆
      * @param bookingDate
      * @param bookingTime
      * @return
      * @throws ParseException
      */
-    @PostMapping("/findVenueByBookingTime")
-    @ResponseBody
-    public List<bookingDto> findVenueByBookingTime(@RequestParam("bookingDate") String bookingDate, @RequestParam("bookingTime") String bookingTime) throws ParseException {
-        List<bookingDto> list = new ArrayList<>();
-        Map<String, String> venueTypes = DictUtil.value("VENUE_TYPE");
-        Map<Integer, Integer> venueTypesEnable = bookingService.findByBookingDateAndBookingTime(bookingDate, bookingTime);
-        for (int i = 1; i <= venueTypes.size(); i++) {
-            bookingDto bookingDto = new bookingDto();
-            bookingDto.setVenueId(i);
-            bookingDto.setVenue(venueTypes.get(String.valueOf(i)));
-            bookingDto.setEnabled(venueTypesEnable.get(i)==null?0:venueTypesEnable.get(i));
-            list.add(bookingDto);
-        }
-        return list;
-    }
+//    @PostMapping("/findVenueByBookingTime")
+//    @ResponseBody
+//    public List<bookingDto> findVenueByBookingTime(@RequestParam("bookingDate") String bookingDate, @RequestParam("bookingTime") String bookingTime) throws ParseException {
+//        List<bookingDto> list = new ArrayList<>();
+//        Map<String, String> venueTypes = DictUtil.value("VENUE_TYPE");
+//        Map<Integer, Integer> venueTypesEnable = bookingService.findByBookingDateAndBookingTime(bookingDate, bookingTime);
+//        for (int i = 1; i <= venueTypes.size(); i++) {
+//            bookingDto bookingDto = new bookingDto();
+//            bookingDto.setVenueId(i);
+//            bookingDto.setVenue(venueTypes.get(String.valueOf(i)));
+//            bookingDto.setEnabled(venueTypesEnable.get(i)==null?1:venueTypesEnable.get(i));
+//            list.add(bookingDto);
+//        }
+//        return list;
+//    }
 }

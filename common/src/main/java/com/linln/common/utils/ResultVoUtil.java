@@ -12,6 +12,7 @@ import com.linln.common.vo.ResultVo;
 public class ResultVoUtil {
 
     public static ResultVo SAVE_SUCCESS = success("保存成功");
+    public static ResultVo BOOKING_SUCCESS = success("预约成功");
 
     /**
      * 操作成功
