@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/common/template :: header(~{::title},~{::link},~{::style})">
+    <title>注册</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}">
+</head>
+<body class="layui-layout-login">
+<div class="login-bg">
+    <div class="cover"></div>
+</div>
+<div class="login-content" th:classappend="${isCaptcha} ? 'captcha'">
+    <h1 class="login-box-title"><i class="fa fa-fw fa-user"></i>注册</h1>
+    <form class="layui-form" th:action="@{/doRegister}" method="post">
+        <div class="layui-form-item">
+            <label class="layui-icon layui-icon-username required" for="username"></label>
+            <input class="layui-input" type="text" name="username" id="username" placeholder="请输入手机号">
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-icon layui-icon-user required" for="nickname"></label>
+            <input class="layui-input" type="text" name="nickname" id="nickname" placeholder="请输入昵称" required>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-icon layui-icon-password required" for="password"></label>
+            <input class="layui-input" type="password" name="password" id="password" placeholder="请输入密码">
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-icon layui-icon-password required" for="confirm"></label>
+            <input class="layui-input" type="password" name="confirm" id="confirm" placeholder="请再次输入密码">
+        </div>
+        <div th:if="${isCaptcha}" class="layui-form-item captcha-item">
+            <label class="layui-icon layui-icon-vercode"></label>
+            <input class="layui-input" type="text" name="captcha" autocomplete="off" placeholder="验证码">
+            <img class="captcha-img" th:src="@{/captcha}" />
+        </div>
+        <div class="layui-form-item">
+            <button type="submit" class="layui-btn layui-btn-fluid ajax-doRegister">
+                <i class="fa fa-sign-in fa-lg fa-fw"></i> 注册
+            </button>
+        </div>
+        <div class="layui-form-item">
+            <input type="button" class="layui-btn layui-btn-fluid" onclick="location.href='/login';" value="返回">
+        </div>
+    </form>
+    <div class="layui-layer-loading login-page-loading"><div class="layui-layer-content"></div></div>
+</div>
+<script th:replace="/common/template :: script"></script>
+<script th:src="@{/js/login.js}" charset="utf-8"></script>
+</body>
+</html>

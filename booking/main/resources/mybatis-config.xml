@@ -1,0 +1,66 @@
+<configuration>
+    <properties resource="mysql.properties"></properties>
+
+    <typeAliases>
+        <!-- 别名方式1，一个一个的配置 type中放置的是类的全路径，alias中放置的是类别名
+        <typeAliase type="com.mybatis.demo.Entity.User" alias="UserBean"/> -->
+        <!-- 别名方式2，自动扫描，将JAVA类的类名作为类的类别名 -->
+        <!--<package name="com.mybatis.demo.Entity"/>-->
+        <typeAlias name="rjsoft.po"/>
+    </typeAliases>
+
+    <plugins>
+        <plugin intercepter="">
+            <property name="dialect" value="mysql" />
+            <!-- 该参数新为false-->
+            <!-- 设置为true时,会将RowBounds第一个参数offset当成pageNum页码使用-->
+            <!--和startPage中pageNum果一样-->
+            <property name="offsetAsPageName" value="true"/>
+            <!--该参数默认为false-->
+            <!--设曾为true时,使用RowBounds分页会进行count查询-->
+            <property name="rowBoundsWithCount" value="true" />
+            <!--设置为true时,如果pageSize=0或RowBounds.Limit = 0就会查询出全部的结果-->
+            <!-- (相当于没有执行分页查询,但是返回结果仍然是Page类型)-->
+            <property name="pageSizeZero" value="true"/>
+            <!--3.3.0版本可用 分页参数合理化,默认false禁用-->
+            <!--启用合理化时，如果pageNum<1会查询第一页,如果pageNum>pages会查询最后-页-->
+            <!--禁再合理化时，如果pageNum<1或pageNum>pages会返回空数据-->
+            <property name="reasonable" value="true"/>
+        </plugin>
+    </plugins>
+    <!-- 配置mybatis运行环境 -->
+    <environments default="development">
+        <environment id="development">
+            <!-- type="JDBC" 代表使用JDBC的提交和回滚来管理事务 -->
+            <transactionManager type="JDBC"/>
+            <!-- mybatis提供了3种数据源类型，分别是：POOLED,UNPOOLED,JNDI -->
+            <!-- POOLED 表示支持JDBC数据源连接池 -->
+            <!-- UNPOOLED 表示不支持数据源连接池 -->
+            <!-- JNDI 表示支持外部数据源连接池 -->
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.databaseurl}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+
+    <mappers>
+        <!-- 映射文件方式1，一个一个的配置-->
+        <mapper resource="mapper/UserMapper.xml"/>
+        <!-- 映射文件方式2，自动扫描包内的Mapper接口与配置文件 -->
+        <!--<package name="com.mybatis.demo"/>-->
+    </mappers>
+
+    <settings>
+        <!-- 打印查询语句 -->
+        <setting name="logImpl" value="STDOUT_LOGGING" />
+    </settings>
+    <!-- 	<plugins> -->
+    <!-- 		<plugin interceptor="com.github.pagehelper.PageInterceptor"> -->
+    <!-- 			<property name="helper-dialect" value="mysql" /> -->
+    <!-- 		</plugin> -->
+    <!-- 	</plugins> -->
+</configuration>

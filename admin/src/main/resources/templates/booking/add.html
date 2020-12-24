@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/common/template :: header(~{::title},~{::link},~{::style})">
+</head>
+<body>
+<div class="layui-form timo-compile">
+    <form th:action="@{/booking/save}">
+<!--        <input type="hidden" name="id" th:if="${list}" th:value="${list.id}"/>-->
+        <div class="layui-form-item">
+            <label class="layui-form-label required">姓名</label>
+            <div class="layui-input-inline">
+                <input class="layui-input" type="text" name="nickname" th:value="${nickname}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">手机号</label>
+            <div class="layui-input-inline">
+                <input class="layui-input" type="text" name="username" th:value="${username}" readonly="readonly">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">人数</label>
+            <div class="layui-input-inline">
+                <input class="layui-input" type="text" name="number" placeholder="请输入预约人数">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">预约日期</label>
+            <div class="layui-input-inline">
+<!--                <input class="layui-input" type="text" id="laydate" name="bookingDate" placeholder="请选择预约日期" lay-key="1">-->
+                <select name="bookingDateSelect" lay-filter="bookingDate">
+                    <option th:each="bookingDate:${bookingDates}" th:value="${bookingDate}" th:text="${bookingDate}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">预约时间</label>
+            <div class="layui-input-inline">
+                <select name="bookingTimeSelect" lay-filter="bookingTime">
+<!--                    <option th:each="bookingTime:${bookingTimes}" th:value="${bookingTime.key}" th:text="${bookingTime.value}"></option>-->
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">场馆</label>
+            <div class="layui-input-inline">
+                <select name="venueSelect" lay-filter="venue">
+<!--                    <option th:each="venue:${venueTypes}" th:value="${venue.key}" th:text="${venue.value}"></option>-->
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item timo-finally">
+            <button class="layui-btn ajax-submit"><i class="fa fa-check-circle"></i> 预约</button>
+            <button class="layui-btn btn-secondary close-popup"><i class="fa fa-times-circle"></i> 关闭</button>
+        </div>
+    </form>
+</div>
+<script th:replace="/common/template :: script"></script>
+</body>
+</html>
